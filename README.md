@@ -2,7 +2,7 @@
 
 Website bán giày, dự án Capstone ReactJS của Cybersoft Bootcamp.
 
-**Demo:** _(cập nhật sau khi deploy Vercel)_
+**Demo:** https://capstone-reactjs-cybersoft-shoes-sh.vercel.app
 
 ## Công nghệ
 
