@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
@@ -10,6 +11,9 @@ import Profile from './pages/Profile.jsx'
 import Carts from './pages/Carts.jsx'
 import Search from './pages/Search.jsx'
 import Category from './pages/Category.jsx'
+import ChangePassword from './pages/ChangePassword.jsx'
+
+const Stores = lazy(() => import('./pages/Stores.jsx'))
 
 function App() {
   return (
@@ -24,7 +28,16 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/carts" element={<PrivateRoute><Carts /></PrivateRoute>} />
+            <Route path="/change-password" element={<PrivateRoute><ChangePassword /></PrivateRoute>} />
             <Route path="/search" element={<Search />} />
+            <Route
+              path="/stores"
+              element={
+                <Suspense fallback={<p className="text-center py-5">Loading...</p>}>
+                  <Stores />
+                </Suspense>
+              }
+            />
             <Route path="/men" element={<Category title="Men" categoryId="MEN" />} />
             <Route path="/woman" element={<Category title="Woman" categoryId="WOMEN" />} />
             <Route path="/nike" element={<Category title="Nike" categoryId="NIKE" />} />

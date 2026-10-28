@@ -1,6 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getProducts, getProductById, getProductByCategory } from '../../services/api.js'
-import { isOriginalProduct } from '../../utils/format.js'
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import _ from 'lodash'
+import { getProducts, getProductById, getProductByCategory, getAllStore } from '../../services/api.js'
+import { getCategoryIds, isOriginalProduct, isRealStore } from '../../utils/format.js'
 
 const onlyOriginal = (products) => (products ?? []).filter(isOriginalProduct)
 
@@ -14,6 +15,8 @@ export const fetchProductsByCategory = createAsyncThunk('product/fetchByCategory
   categoryId ? getProductByCategory(categoryId) : getProducts(),
 )
 
+export const fetchStores = createAsyncThunk('product/fetchStores', () => getAllStore())
+
 const productSlice = createSlice({
   name: 'product',
   initialState: {
@@ -22,6 +25,9 @@ const productSlice = createSlice({
     searchResults: [],
     categoryProducts: [],
     categoryRequestId: null,
+    stores: [],
+    storesLoading: false,
+    storesError: null,
     loading: false,
     error: null,
   },
@@ -85,7 +91,41 @@ const productSlice = createSlice({
         state.loading = false
         state.error = action.error.message
       })
+      .addCase(fetchStores.pending, (state) => {
+        state.storesLoading = true
+        state.storesError = null
+      })
+      .addCase(fetchStores.fulfilled, (state, action) => {
+        state.storesLoading = false
+        state.stores = (action.payload ?? []).filter(isRealStore)
+      })
+      .addCase(fetchStores.rejected, (state, action) => {
+        state.storesLoading = false
+        state.storesError = action.error.message
+      })
   },
 })
+
+export const selectRecommendations = createSelector(
+  [(state) => state.product.list, (state) => state.user.favorites],
+  (products, favorites) => {
+    const likedIds = new Set(favorites.map((f) => String(f.id)))
+    const liked = products.filter((p) => likedIds.has(String(p.id)))
+    const weights = _.countBy(liked.flatMap(getCategoryIds))
+    const categories = _.orderBy(Object.keys(weights), (c) => weights[c], 'desc')
+
+    const candidates = products
+      .filter((p) => !likedIds.has(String(p.id)))
+      .map((p) => ({ product: p, score: _.sumBy(getCategoryIds(p), (c) => weights[c] ?? 0) }))
+      .filter((c) => c.score > 0)
+
+    return {
+      categories,
+      products: _.orderBy(candidates, ['score', 'product.price'], ['desc', 'desc'])
+        .slice(0, 4)
+        .map((c) => c.product),
+    }
+  },
+)
 
 export default productSlice.reducer

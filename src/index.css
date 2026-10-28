@@ -959,6 +959,26 @@ a.footer-link:hover {
   color: var(--c-red);
   font-size: 0.88rem;
 }
+.success-alert {
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  background: rgba(47, 143, 70, 0.1);
+  color: var(--c-success);
+  font-size: 0.88rem;
+}
+.form-card-narrow {
+  max-width: 520px;
+}
+.back-link {
+  color: var(--c-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.back-link:hover {
+  color: var(--c-text);
+}
 .auth-divider {
   display: flex;
   align-items: center;
@@ -1190,10 +1210,15 @@ a.footer-link:hover {
   background: var(--c-card);
   text-align: center;
 }
+.avatar-wrap {
+  position: relative;
+  width: 112px;
+  margin: 0 auto 16px;
+}
 .avatar {
+  position: relative;
   width: 112px;
   height: 112px;
-  margin: 0 auto 16px;
   border-radius: 50%;
   background: var(--c-text);
   color: #fff;
@@ -1203,6 +1228,76 @@ a.footer-link:hover {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+.avatar-loading {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  color: #fff;
+}
+.avatar-edit {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid var(--c-card);
+  background: var(--c-text);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.avatar-edit:hover {
+  transform: scale(1.1);
+}
+.avatar-edit:has(input:focus-visible) {
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+}
+.avatar-edit input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.avatar-remove {
+  border: none;
+  background: none;
+  color: var(--c-muted);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  margin-bottom: 8px;
+}
+.avatar-message {
+  font-size: 0.8rem;
+  margin: 0 0 12px;
+}
+.avatar-message.success {
+  color: var(--c-success);
+}
+.avatar-message.error {
+  color: var(--c-red);
+}
+.avatar-message.info {
+  color: var(--c-muted);
+}
+.btn-cancel-order {
+  margin-top: 6px;
+  padding: 4px 12px;
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  background: none;
+  color: var(--c-red);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.btn-cancel-order:hover:not(:disabled) {
+  border-color: var(--c-red);
+}
+.btn-cancel-order:disabled {
+  opacity: 0.5;
 }
 .profile-name {
   font-size: 1.3rem;
@@ -1346,6 +1441,98 @@ a.footer-link:hover {
 }
 .page-gap {
   cursor: default;
+}
+
+/* ===== Stores ===== */
+.store-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+.store-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: var(--c-card);
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.store-card:hover {
+  border-color: var(--c-line);
+}
+.store-card.active {
+  border-color: var(--c-text);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+.store-img {
+  flex-shrink: 0;
+  width: 84px;
+  height: 84px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--c-surface);
+}
+.store-img.img-fallback {
+  font-size: 1.6rem;
+  min-height: 0;
+}
+.store-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.store-name {
+  font-weight: 700;
+}
+.store-address {
+  color: var(--c-muted);
+  font-size: 0.85rem;
+}
+.map-wrap {
+  position: sticky;
+  top: 130px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--c-surface);
+}
+.map {
+  height: 540px;
+  width: 100%;
+}
+.map-pin {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--c-text);
+  color: #fff;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s;
+}
+.map-pin i {
+  transform: rotate(45deg);
+  font-size: 1rem;
+}
+.map-pin.active {
+  background: var(--c-red);
+}
+.leaflet-popup-content {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.leaflet-popup-content a {
+  color: var(--c-text);
+  font-weight: 700;
 }
 
 /* ===== Search, Category ===== */
@@ -1601,6 +1788,9 @@ a.footer-link:hover {
   }
   .auth-body {
     padding: 32px 20px;
+  }
+  .map {
+    height: 380px;
   }
   .page-title,
   .section-title,

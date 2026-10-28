@@ -21,7 +21,7 @@ const COLUMNS = [
   },
   {
     title: 'Support',
-    links: [{ label: 'About' }, { label: 'Contact' }, { label: 'Help' }, { label: 'Phone' }],
+    links: [{ label: 'Stores', to: '/stores' }, { label: 'About' }, { label: 'Contact' }, { label: 'Help' }],
   },
 ]
 

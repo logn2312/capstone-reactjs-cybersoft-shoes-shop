@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Carousel from '../components/Carousel.jsx'
 import ProductCard from '../components/ProductCard.jsx'
 import ProductImage from '../components/ProductImage.jsx'
+import Recommendations from '../components/Recommendations.jsx'
 import { fetchProducts } from '../redux/slices/productSlice.js'
 
 const CATEGORIES = [
@@ -81,6 +82,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <Recommendations className="container-xl home-block" />
 
       <section className="container-xl home-block">
         <div className="services">

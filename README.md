@@ -12,6 +12,7 @@ Website bán giày, dự án Capstone ReactJS của Cybersoft Bootcamp.
 - Axios (interceptor tự gắn token)
 - Lodash (sắp xếp giá ở trang Search)
 - Bootstrap 5 + Bootstrap Icons
+- Leaflet + React Leaflet (bản đồ cửa hàng)
 - API: [shop.cyberlearn.vn](https://shop.cyberlearn.vn/swagger)
 
 ## Chức năng
@@ -29,6 +30,16 @@ Website bán giày, dự án Capstone ReactJS của Cybersoft Bootcamp.
 - Thêm vào giỏ → số lượng trên header tăng ngay; giỏ hàng lưu trong localStorage.
 - Like / unlike sản phẩm (nút tim), đồng bộ với API.
 - Responsive cho mobile.
+
+### Tính năng ẩn
+
+| Tính năng | Mô tả |
+|---|---|
+| Đổi mật khẩu | Trang riêng `/change-password`, xác nhận mật khẩu hiện tại trước khi đổi |
+| Cửa hàng trên bản đồ | Trang `/stores` dùng Leaflet + OpenStreetMap, chỉ đường bằng Google Maps |
+| Gợi ý theo danh mục yêu thích | Mục "Recommended for you" ở Home và Profile, dựa trên danh mục các sản phẩm đã thích |
+| Đổi avatar | Upload qua API; server lỗi thì lưu ảnh trên trình duyệt |
+| Huỷ đơn hàng | Nút "Cancel order" trong lịch sử đơn hàng |
 
 ## Chạy dự án
 
@@ -54,4 +65,6 @@ src/
 ## Ghi chú
 
 - API dùng chung cho cả lớp nên có nhiều sản phẩm test do học viên khác tạo (tên "string", ảnh lỗi...). Web chỉ hiện **18 sản phẩm gốc** của shop.
+- Cửa hàng test (toạ độ sai, địa chỉ vô nghĩa) cũng được ẩn, chỉ hiện cửa hàng thật.
+- API `uploadavatar` hiện lỗi phía server (không có quyền ghi file).
 - Đăng nhập Facebook dùng Facebook App của Cybersoft. App này hiện bị Facebook khoá nên chưa đăng nhập được.

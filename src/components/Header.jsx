@@ -10,6 +10,7 @@ const MENU = [
   { label: 'Woman', to: '/woman' },
   { label: 'Kid',   to: '/kid' },
   { label: 'Sport', to: '/sport' },
+  { label: 'Stores', to: '/stores' },
 ]
 
 function Logo() {

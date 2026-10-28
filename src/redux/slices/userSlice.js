@@ -1,6 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { signin, signup, getProfile, updateProfile, getFavorite, facebookLogin, like, unlike } from '../../services/api.js'
+import {
+  signin,
+  signup,
+  getProfile,
+  updateProfile,
+  changePassword,
+  getFavorite,
+  facebookLogin,
+  like,
+  unlike,
+  deleteOrder,
+  uploadAvatar as uploadAvatarApi,
+} from '../../services/api.js'
 import { getFacebookToken } from '../../services/facebook.js'
+import { readLocalAvatar, resizeImage, saveLocalAvatar } from '../../utils/image.js'
 
 export const login = createAsyncThunk('user/login', async (values) => {
   const content = await signin(values)
@@ -31,8 +44,46 @@ export const register = createAsyncThunk('user/register', async (values) => {
 
 export const fetchProfile = createAsyncThunk('user/fetchProfile', () => getProfile())
 
-export const saveProfile = createAsyncThunk('user/saveProfile', async (values, { dispatch }) => {
+export const WRONG_PASSWORD = 'Mật khẩu hiện tại không đúng'
+
+async function verifyPassword(email, password) {
+  try {
+    await signin({ email, password })
+  } catch {
+    throw new Error(WRONG_PASSWORD)
+  }
+}
+
+export const saveProfile = createAsyncThunk('user/saveProfile', async (values, { dispatch, getState }) => {
+  await verifyPassword(getState().user.email, values.password)
   await updateProfile(values)
+  return dispatch(fetchProfile()).unwrap()
+})
+
+export const updatePassword = createAsyncThunk(
+  'user/updatePassword',
+  async ({ currentPassword, newPassword }, { getState }) => {
+    await verifyPassword(getState().user.email, currentPassword)
+    return changePassword(newPassword)
+  },
+)
+
+export const uploadAvatar = createAsyncThunk('user/uploadAvatar', async (file, { getState, dispatch }) => {
+  const { email } = getState().user
+  try {
+    await uploadAvatarApi(file)
+  } catch {
+    const dataUrl = await resizeImage(file)
+    saveLocalAvatar(email, dataUrl)
+    return { source: 'local', localAvatar: dataUrl }
+  }
+  saveLocalAvatar(email, null)
+  await dispatch(fetchProfile()).unwrap()
+  return { source: 'server', localAvatar: null }
+})
+
+export const cancelOrder = createAsyncThunk('user/cancelOrder', async (orderId, { dispatch }) => {
+  await deleteOrder(orderId)
   return dispatch(fetchProfile()).unwrap()
 })
 
@@ -56,15 +107,21 @@ const userSlice = createSlice({
     email: localStorage.getItem('email'),
     profile: null,
     favorites: [],
+    localAvatar: readLocalAvatar(localStorage.getItem('email')),
     loading: false,
     error: null,
   },
   reducers: {
+    removeLocalAvatar: (state) => {
+      saveLocalAvatar(state.email, null)
+      state.localAvatar = null
+    },
     logout: (state) => {
       state.token = null
       state.email = null
       state.profile = null
       state.favorites = []
+      state.localAvatar = null
       localStorage.removeItem('accessToken')
       localStorage.removeItem('email')
     },
@@ -79,6 +136,7 @@ const userSlice = createSlice({
         state.loading = false
         state.token = action.payload.token
         state.email = action.payload.email
+        state.localAvatar = readLocalAvatar(action.payload.email)
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false
@@ -92,6 +150,7 @@ const userSlice = createSlice({
         state.loading = false
         state.token = action.payload.token
         state.email = action.payload.email
+        state.localAvatar = readLocalAvatar(action.payload.email)
       })
       .addCase(loginFacebook.rejected, (state, action) => {
         state.loading = false
@@ -124,6 +183,9 @@ const userSlice = createSlice({
       .addCase(saveProfile.rejected, (state, action) => {
         state.error = action.error.message
       })
+      .addCase(uploadAvatar.fulfilled, (state, action) => {
+        state.localAvatar = action.payload.localAvatar
+      })
       .addCase(fetchFavorites.fulfilled, (state, action) => {
         state.favorites = action.payload
       })
@@ -140,5 +202,5 @@ const userSlice = createSlice({
   },
 })
 
-export const { logout } = userSlice.actions
+export const { logout, removeLocalAvatar } = userSlice.actions
 export default userSlice.reducer

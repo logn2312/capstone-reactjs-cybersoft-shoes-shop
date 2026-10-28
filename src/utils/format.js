@@ -46,6 +46,17 @@ export function getCategoryIds(product) {
 export const formatCategory = (id) =>
   id.toLowerCase().replaceAll('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 
+export function fixNestedUrl(src) {
+  if (!src) return ''
+  const i = src.lastIndexOf('http')
+  return i > 0 ? src.slice(i) : src
+}
+
+const inVietnam = (lat, lng) => lat >= 8 && lat <= 24 && lng >= 102 && lng <= 110
+
+export const isRealStore = (store) =>
+  inVietnam(Number(store.latitude), Number(store.longtitude)) && /\s/.test(store.description ?? '')
+
 export function formatPrice(price) {
   return `${Number(price).toLocaleString('en-US')}$`
 }
