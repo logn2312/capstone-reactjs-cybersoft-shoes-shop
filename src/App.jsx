@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import PrivateRoute from './components/PrivateRoute.jsx'
+import ScrollToTop from './components/ScrollToTop.jsx'
 import Home from './pages/Home.jsx'
 import Detail from './pages/Detail.jsx'
 import Login from './pages/Login.jsx'
@@ -18,6 +19,7 @@ const Stores = lazy(() => import('./pages/Stores.jsx'))
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <div className="d-flex flex-column min-vh-100">
         <Header />
         <main className="flex-grow-1">

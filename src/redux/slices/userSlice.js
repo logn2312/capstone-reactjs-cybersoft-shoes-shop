@@ -69,16 +69,23 @@ export const updatePassword = createAsyncThunk(
 )
 
 export const uploadAvatar = createAsyncThunk('user/uploadAvatar', async (file, { getState, dispatch }) => {
-  const { email } = getState().user
-  try {
-    await uploadAvatarApi(file)
-  } catch {
+  const { email, profile } = getState().user
+  const saveLocal = async () => {
     const dataUrl = await resizeImage(file)
     saveLocalAvatar(email, dataUrl)
     return { source: 'local', localAvatar: dataUrl }
   }
+
+  const before = profile?.avatar ?? (await getProfile()).avatar
+  try {
+    await uploadAvatarApi(file)
+  } catch {
+    return saveLocal()
+  }
+  const updated = await dispatch(fetchProfile()).unwrap()
+  if (!updated?.avatar || updated.avatar === before) return saveLocal()
+
   saveLocalAvatar(email, null)
-  await dispatch(fetchProfile()).unwrap()
   return { source: 'server', localAvatar: null }
 })
 
